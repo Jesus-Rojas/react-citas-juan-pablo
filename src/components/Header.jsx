@@ -1,6 +1,9 @@
 const Header = () => {
   return (
-    <div className="bg-orange-400">Header</div>
+    <h1 className="font-black text-center text-4xl md:w-2/3 mx-auto">
+      Seguimiento Pacientes {''}
+      <span className="text-indigo-600">Veterinaria</span>
+    </h1>
   )
 }
 
