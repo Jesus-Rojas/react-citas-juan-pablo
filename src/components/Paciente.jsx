@@ -1,4 +1,4 @@
-const Paciente = ({ paciente, setPaciente }) => {
+const Paciente = ({ paciente, setPaciente, deletePaciente }) => {
   const { nombre, propietario, email, fecha, sintomas, id } = paciente;
 
   // methods
