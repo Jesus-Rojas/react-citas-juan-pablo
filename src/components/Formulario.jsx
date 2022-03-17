@@ -1,20 +1,62 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Error from './Error';
 
-const Formulario = () => {
+const Formulario = ({ setPacientes, pacientes, paciente, setPaciente }) => {
   // hooks
   const [nombre, setNombre] = useState('');
   const [propietario, setPropietario] = useState('');
   const [email, setEmail] = useState('');
   const [fecha, setFecha] = useState('');
   const [sintomas, setSintomas] = useState('');
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (Object.keys(paciente).length > 0) {
+      setNombre(paciente.nombre)
+      setPropietario(paciente.propietario)
+      setEmail(paciente.email)
+      setFecha(paciente.fecha)
+      setSintomas(paciente.sintomas)
+    }
+  }, [paciente])
+  
 
   // methods
+  const generarId = () => { 
+    const fecha = Date.now().toString(36)
+    const random = Math.random().toString(36).substring(2)
+    return fecha + random
+  }
   const handleSubmit = (e) => { 
     e.preventDefault()
+    // Validacion Formulario
     if ([nombre, propietario, email, fecha, sintomas].includes('')) {
-      
+      setError(true)
+      return
     }
-
+    const datos = {
+      nombre,
+      propietario,
+      email,
+      fecha,
+      sintomas,
+    }
+    if (paciente.id) {
+      datos.id = paciente.id
+      const pacientesUpdate = pacientes.map( data => data.id === datos.id ? datos : data)
+      setPacientes(pacientesUpdate)
+      setPaciente({})
+    } else {
+      datos.id = generarId()
+      setPacientes([...pacientes, datos])
+    }
+    // Reiniciar Form
+    setNombre('')
+    setPropietario('')
+    setEmail('')
+    setFecha('')
+    setSintomas('')
+    setError(false)
   }
 
   return (
@@ -28,6 +70,7 @@ const Formulario = () => {
         className='bg-white shadow-md rounded-lg py-10 px-5 mb-10'
         onSubmit={handleSubmit}
       >
+        { error && <Error mensaje='Todos los campos son obligatorios' /> }
         <div className='mb-5'>
           <label 
             htmlFor='mascota'
@@ -109,7 +152,7 @@ const Formulario = () => {
         <input 
           type="submit"
           className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-          value='Agregar Paciente'
+          value={ paciente.id ? 'Editar Paciente' : 'Agregar Paciente' }
         />
       </form>
     </div>
